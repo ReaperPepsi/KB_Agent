@@ -1,0 +1,15 @@
+database:
+  server: "192.168.1.132,6201"
+  database: "DEMO"
+  username: "python_user"
+  password: "UxmIncaFJG8Q5F38T21R"
+
+logging:
+  level: "INFO"
+  file: "./logs/app.log"
+
+env:
+  name: "dev"
+
+sources:
+  ms_kb_url: "https://sqlserverbuilds.blogspot.com/"
