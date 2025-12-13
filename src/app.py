@@ -27,8 +27,6 @@ inst_test.create_connection()
 print(inst_test.execute_query(query_test_insert_with_params[0], query_test_insert_with_params[1]))
 print(inst_test.execute_query("SELECT * FROM dbo.Test"))
 
-
-
 #inst1.close()
 
 
