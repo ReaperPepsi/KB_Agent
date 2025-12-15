@@ -21,15 +21,8 @@ def check_status(urls):
             print(f"Success!\nStatus code: {response.status_code}")
             soup = BeautifulSoup(response.text, 'html.parser')
             container_sql_2025 = soup.find_all('table')[3]
-            headers = []
-            for th in container_sql_2025.find_all("th"):
-                text = th.find(string=True, recursive=False)
-                if text:
-                    headers.append(text.strip())
-
 
             collumn_data = container_sql_2025.find_all("tr")
-            values = []
             for row in collumn_data[1:]: 
                 row_data = row.find_all('td') 
                 test = [data.text for data in row_data[0]]
