@@ -18,12 +18,25 @@ def check_status(urls):
         except Exception as ex:
             print(f"Other error occured: {ex}")
         else:
+            print(f"Success!\nStatus code: {response.status_code}")
             soup = BeautifulSoup(response.text, 'html.parser')
-            h1_tags = soup.find_all('p')
-            print(f"Success!\nStatus code: {response.status_code}\nContent: {response.text}")
-            for h1 in h1_tags:
-                print(f"{h1}")
+            container_sql_2025 = soup.find_all('table')[3]
+            headers = []
+            for th in container_sql_2025.find_all("th"):
+                text = th.find(string=True, recursive=False)
+                if text:
+                    headers.append(text.strip())
 
-URLS = ['https://example.com']
+
+            collumn_data = container_sql_2025.find_all("tr")
+            values = []
+            for row in collumn_data[1:]: 
+                row_data = row.find_all('td') 
+                test = [data.text for data in row_data[0]]
+                release_date = row_data[-1].get_text(strip=True)
+                print(test[0], release_date)
+
+
+URLS = ['https://sqlserverbuilds.blogspot.com']
 
 check_status(URLS)
