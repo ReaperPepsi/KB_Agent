@@ -74,8 +74,4 @@ def insert_data(kb_list):
     
     return f"{len(kb_list)} items inserted in JSON file"
 
-URLS = 'https://sqlserverbuilds.blogspot.com'
 
-response = check_connection(URLS)
-sql_2025_kb_list = kb_scapping(response)
-print(insert_data(sql_2025_kb_list))
