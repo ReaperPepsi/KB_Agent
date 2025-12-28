@@ -1,4 +1,8 @@
 import pyodbc
+from logs.logger import get_logger
+
+logger = get_logger('db', 'db.log')
+
 
 class SQLConnector:
     def __init__(self, config):

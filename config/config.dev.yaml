@@ -1,6 +1,6 @@
 database:
-  server: "192.168.1.132,6201"
-  database: "DEMO"
+  server: "192.168.0.107,6201"
+  database: "KB_Project_Dev"
   username: "python_user"
   password: "UxmIncaFJG8Q5F38T21R"
 

@@ -1,5 +1,5 @@
 import yaml, pyodbc, sys, os
-from core.db.connectors.sql_connector import SQLConnector
+from src.core.db.connectors.sql_connector import SQLConnector
 
 # Obține calea absolută a rădăcinii proiectului
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,9 +24,8 @@ output = {
 inst_test = SQLConnector(output)
 
 inst_test.create_connection()
+#print(inst_test.execute_query(query_test_insert_with_params[0], query_test_insert_with_params[1]))
 print(inst_test.execute_query(query_test_insert_with_params[0], query_test_insert_with_params[1]))
-print(inst_test.execute_query("SELECT * FROM dbo.Test"))
 
-#inst1.close()
 
 
