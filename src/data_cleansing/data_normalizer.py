@@ -51,4 +51,3 @@ def create_cleansed_json(cleansed_data):
     return f"{len(cleansed_data)} items inserted in JSON file"
 
 
-test_list = [{"kb": "17.0.1000.7", "release_date": "2025-11-18*new"}, {"kb": "17.0.925.4", "release_date": "2025-09-16"}, {"kb": "17.0.900.7", "release_date": "2025-08-21"}, {"kb": "17.0.800.3", "release_date": "2025-06-16"}, {"kb": "17.0.700.9", "release_date": "2025-05-19"}, {"kb": "17.0.600.9", "release_date": "2025-04-10"}, {"kb": "17.0.17.0", "release_date": "2024-11-19"}, {"kb": "17.0.17.0", "release_date": ""}]
