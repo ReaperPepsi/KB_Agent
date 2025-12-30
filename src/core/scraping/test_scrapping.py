@@ -43,22 +43,41 @@ def check_connection(url):
 
 # check the status 
 def kb_scapping(response):
-    item_container = []
-
+    json_raw = {}
     if response.status_code in range(200, 400):
         soup = BeautifulSoup(response.text, 'html.parser')
-        container_sql_2025 = soup.find_all('table')[3]
+        container_sql_2025 = soup.find_all('table')[3] # -> SQL 2025
+        container_sql_2022 = soup.find_all('table')[4] # -> SQL 2022
+        container_sql_2019 = soup.find_all('table')[5] # -> SQL 2019
+        container_sql_2017 = soup.find_all('table')[6] # -> SQL 2017
+        container_sql_2016 = soup.find_all('table')[7] # -> SQL 2016
+        container_sql_2014 = soup.find_all('table')[8] # -> SQL 2014
         
-        collumn_data = container_sql_2025.find_all("tr")
-        for row in collumn_data[1:]: 
-            row_data = row.find_all('td') 
-            test = [data.text for data in row_data[0]]
-            release_date = row_data[-1].get_text(strip=True)
-            row = {"kb": test[0], "release_date": release_date}
-            item_container.append(row)
+        collumn_data_2025 = container_sql_2025.find_all("tr")
+        collumn_data_2022 = container_sql_2022.find_all("tr")
+        collumn_data_2019 = container_sql_2019.find_all("tr")
+        collumn_data_2017 = container_sql_2017.find_all("tr")
+        collumn_data_2016 = container_sql_2016.find_all("tr")
+        collumn_data_2014 = container_sql_2014.find_all("tr")
+
+        data_list = [
+    ("SQL_2025", collumn_data_2025),
+    ("SQL_2022", collumn_data_2022)
+]
+
+        for version, rows in data_list:
+            item_container = []
+            for row in rows[1:]: 
+                row_data = row.find_all('td') 
+                kb = [data.text for data in row_data[0]]
+                release_date = row_data[-1].get_text(strip=True)
+                row = {"kb": kb[0], "release_date": release_date}
+                item_container.append(row)
+                json_raw[version] =  item_container
+
 
     logging.info(f"KB successfully scrapped")
-    return item_container
+    return json_raw
 
 
 def insert_data(kb_list):
@@ -73,5 +92,7 @@ def insert_data(kb_list):
         logging.info(f"{len(kb_list)} items written to JSON")
     
     return f"{len(kb_list)} items inserted in JSON file"
+
+
 
 

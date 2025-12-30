@@ -1,5 +1,7 @@
-import yaml, json
+import yaml, json, re
 from src.core.db.connectors.sql_connector import SQLConnector
+from src.core.scraping.test_scrapping import check_connection, kb_scapping, insert_data
+from src.data_cleansing.data_normalizer import data_clansing, create_cleansed_json
 from logs.logger import get_logger
 
 logger = get_logger('db', 'db.log')
@@ -14,7 +16,22 @@ output = {
     "password": config['database']['password']
 }
 
-with open("src/data_cleansing/kb_list_cleansed.json") as file:
+
+
+# scrape WEB + display response
+response = check_connection(url="https://sqlserverbuilds.blogspot.com/")
+container = kb_scapping(response)
+insert_data(container)
+
+path = "D:\DBA_python\src\core\scraping\kb_list.json"
+with open(path, 'r') as f:
+    data = json.load(f)
+
+cleansed_data = data_clansing(data)
+create_cleansed_json(cleansed_data)
+    
+
+'''with open("src/data_cleansing/kb_list_cleansed.json") as file:
     data = json.load(file) #data file with the ready to use JSON file
 
 params = [(element.get("kb", []), element.get("release_date", [])) for element in data] #tuples pairs for parametrization
@@ -32,7 +49,7 @@ for pairs in params:
         logger.error(f"Failed to INSERT elements: {pairs} with the following error: {e}")
         continue
 
-inst_test.close()
+inst_test.close()'''
 
 
 
