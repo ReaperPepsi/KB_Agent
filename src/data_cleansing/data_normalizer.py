@@ -1,16 +1,7 @@
-import re, os, logging, json
+import re,json
+from logs.logger import get_logger
 
-
-LOG_DIR = "logs"
-os.makedirs(LOG_DIR, exist_ok=True)
-
-LOG_FILE = os.path.join(LOG_DIR, "data_cleansing.log")
-
-logging.basicConfig(
-    filename=LOG_FILE,
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s"
-)
+data_normalizer_logger = get_logger('data_cleansing', 'data_cleansing.log')
 
 
 def data_clansing(kb_list: dict):
@@ -19,10 +10,10 @@ def data_clansing(kb_list: dict):
     errors = 0
     json_cleansed = []
     if not kb_list:
-        #logging.error(f"Empty kb list provided!")
+        data_normalizer_logger.error(f"Empty kb list provided!")
         raise ValueError("Please provide a non empty list")
     else:
-        #logging.info(f"Starting cleansing Data")
+        data_normalizer_logger.info(f"Starting cleansing Data")
         for item in kb_list.values():
             intermediar_list = []
             for values in item:
@@ -34,17 +25,17 @@ def data_clansing(kb_list: dict):
                     intermediar_list.append({"kb": valid_kb, "release_date": valid_date})
                     
                 else:
-                    #logging.error(f"Can not perform data cleansing on {item}")
+                    data_normalizer_logger.info(f"Can not perform data cleansing on {values}")
                     errors += 1
             json_cleansed.append(intermediar_list)
 
-    versions = ["SQL_2025", "SQL_2022"]
+    versions = ["SQL_2025", "SQL_2022", "SQL_2019", "SQL_2017", "SQL_2016", "SQL_2014"]
     final_json = {}
 
     for version, kb_list in zip(versions, json_cleansed):
         final_json[version] = kb_list
 
-    #logging.info(f"Data clansing process terminated with {errors} errors!")
+    data_normalizer_logger.info(f"Data clansing process terminated with {errors} errors!")
     return final_json
 
 
@@ -52,15 +43,15 @@ def data_clansing(kb_list: dict):
 def create_cleansed_json(cleansed_data):
     path = "D:\DBA_python\src\data_cleansing\kb_list_cleansed.json"
     if not cleansed_data:
-        logging.error(f"Empty list of data")
+        data_normalizer_logger.error(f"Empty list of data")
         raise ValueError("Please provide a valid list of data")
     else:
-        logging.info(f"Starting creating normalized JSON")
+        data_normalizer_logger.info(f"Starting creating normalized JSON")
         with open(path, 'w', encoding='UTF-8') as file:
             json.dump(cleansed_data, file)
-        logging.info(f"{len(cleansed_data)} items written to JSON")
+        data_normalizer_logger.info(f"{len(cleansed_data)} items written to JSON")
     
-    logging.info(f"Normalized JSON created!")
+    data_normalizer_logger.info(f"Normalized JSON created!")
     return f"{len(cleansed_data)} items inserted in JSON file"
 
 

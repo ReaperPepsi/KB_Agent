@@ -2,9 +2,6 @@ import yaml, json, re
 from src.core.db.connectors.sql_connector import SQLConnector
 from src.core.scraping.test_scrapping import check_connection, kb_scapping, insert_data
 from src.data_cleansing.data_normalizer import data_clansing, create_cleansed_json
-from logs.logger import get_logger
-
-logger = get_logger('db', 'db.log')
 
 with open("config/config.dev.yaml", 'r') as file:
     config = yaml.full_load(file)
@@ -19,10 +16,12 @@ output = {
 
 
 # scrape WEB + display response
-response = check_connection(url="https://sqlserverbuilds.blogspot.com/")
+response = check_connection(config["sources"]["ms_kb_url"])
 container = kb_scapping(response)
 insert_data(container)
 
+
+# data cleansing part
 path = "D:\DBA_python\src\core\scraping\kb_list.json"
 with open(path, 'r') as f:
     data = json.load(f)

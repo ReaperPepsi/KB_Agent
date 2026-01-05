@@ -62,18 +62,22 @@ def kb_scapping(response):
 
         data_list = [
     ("SQL_2025", collumn_data_2025),
-    ("SQL_2022", collumn_data_2022)
+    ("SQL_2022", collumn_data_2022),
+    ("SQL_2019", collumn_data_2019),
+    ("SQL_2017", collumn_data_2017),
+    ("SQL_2016", collumn_data_2016),
+    ("SQL_2014", collumn_data_2014)
 ]
 
-        for version, rows in data_list:
-            item_container = []
-            for row in rows[1:]: 
-                row_data = row.find_all('td') 
-                kb = [data.text for data in row_data[0]]
-                release_date = row_data[-1].get_text(strip=True)
-                row = {"kb": kb[0], "release_date": release_date}
-                item_container.append(row)
-                json_raw[version] =  item_container
+    for version, rows in data_list:
+        item_container = []
+        for row in rows[1:]: 
+            row_data = row.find_all('td') 
+            kb = [data.text for data in row_data[0]]
+            release_date = row_data[-1].get_text(strip=True)
+            row = {"kb": kb[0], "release_date": release_date}
+            item_container.append(row)
+            json_raw[version] =  item_container
 
 
     logging.info(f"KB successfully scrapped")
