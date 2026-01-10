@@ -15,53 +15,59 @@ output = {
     "password": config['database']['password']
 }
 
-
-
-# scrape WEB + display response
-response = check_connection(config["sources"]["ms_kb_url"])
-container = kb_scrapping(response)
-insert_data(container)
-
-
-# data cleansing part
-path = r"D:\DBA_python\src\core\scraping\kb_list.json"
-with open(path, 'r') as f:
-    data = json.load(f)
-
-
-cleansed_data = data_cleansing(data)
-normalized_data = data_normalizer(cleansed_data)
-create_cleansed_json(normalized_data)
-    
-
 logger = get_logger(
-    name=__name__,
-    filename="db.log"
-)
+name=__name__,
+filename="db.log")
 
-with open("src/data_cleansing/kb_list_cleansed.json") as file:
-    data = json.load(file) #data file with the ready to use JSON file
+# Web scrapping + JSON Insert function
+def web_scrapping_insert_json(url):
 
+    get_response = check_connection(url)
+    container = kb_scrapping(get_response)
+    data_to_insert = insert_data(container)
 
-parameters = []
-for item in data.keys():
-    for element in data.get(item):
-        param = (element.get("kb", []), element.get("release_date"))
-        parameters.append(param)
+    return data_to_insert
 
 
+# Data normalization + JSON Insert
+def prepare_data_for_db(json_row):
 
-query = "INSERT INTO dbo.KB_Test (KB, Release_Date) VALUES (?, ?)" #ready to use T-SQL INSERT
+    cleansed_data = data_cleansing(json_row)
+    normalized_data = data_normalizer(cleansed_data)
+    json_cleansed = create_cleansed_json(normalized_data)
 
-inst_test = SQLConnector(output) #create a new instance
-inst_test.create_connection() #create a new connection
+    return json_cleansed
 
 
-for pairs in parameters:
-    try:
-        inst_test.execute_query(query, pairs) #execute pairs of parameters
-    except Exception as e:
-        logger.error(f"Failed to INSERT elements: {pairs} with the following error: {e}")
-        continue
+def get_insert_parameter(normalized_data):
+    parameter_list = []
+    for item in normalized_data.keys():
+        for element in normalized_data.get(item):
+            param = (element.get("kb", []), element.get("release_date"))
+            parameter_list.append(param)
 
-inst_test.close()
+    return parameter_list
+
+
+def insert_data_sql(parameteres):
+    query = "INSERT INTO dbo.KB_Test (KB, Release_Date) VALUES (?, ?)" #ready to use T-SQL INSERT
+    inst_test = SQLConnector(output) #create a new instance
+    inst_test.create_connection() #create a new connection
+
+    for pairs in parameteres:
+        try:
+            inst_test.execute_query(query, pairs) #execute pairs of parameters
+        except Exception as e:
+            logger.error(f"Failed to INSERT elements: {pairs} with the following error: {e}")
+            continue
+
+    inst_test.close()
+
+    return None
+
+
+scrapped_data = web_scrapping_insert_json(url="https://sqlserverbuilds.blogspot.com/")
+cleansed_json = prepare_data_for_db(scrapped_data)
+sql_parameters = get_insert_parameter(cleansed_json)
+
+insert_data(sql_parameters)

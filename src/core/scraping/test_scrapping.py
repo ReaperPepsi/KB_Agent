@@ -89,8 +89,11 @@ def insert_data(kb_list):
         with open(path, 'w', encoding='UTF-8') as file:
             json.dump(kb_list, file)
         logger.info(f"{len(kb_list)} items written to JSON")
-    
-    return f"{len(kb_list)} items inserted in JSON file"
+
+    with open(path, 'r') as f:
+        data = json.load(f)
+
+    return data
 
 
 

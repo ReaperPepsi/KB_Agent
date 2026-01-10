@@ -62,7 +62,10 @@ def create_cleansed_json(cleansed_data):
         with open(path, 'w', encoding='UTF-8') as file:
             json.dump(cleansed_data, file)
         logger.info(f"{len(cleansed_data)} items written to JSON")
+
+        with open(path, encoding="UTF-8") as file:
+            json_cleansed = json.load(file) #data file with the ready to use JSON file
     
     logger.info(f"Normalized JSON created!")
-    return f"{len(cleansed_data)} items inserted in JSON file"
+    return json_cleansed
 
