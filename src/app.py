@@ -69,5 +69,4 @@ def insert_data_sql(parameteres):
 scrapped_data = web_scrapping_insert_json(url="https://sqlserverbuilds.blogspot.com/")
 cleansed_json = prepare_data_for_db(scrapped_data)
 sql_parameters = get_insert_parameter(cleansed_json)
-
-insert_data(sql_parameters)
+insert_data_sql(sql_parameters)
