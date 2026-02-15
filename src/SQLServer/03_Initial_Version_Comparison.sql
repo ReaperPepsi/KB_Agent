@@ -1,0 +1,39 @@
+WITH Latest_Version AS
+(
+    SELECT
+        Major_Version,
+        Minor_Version,
+        Build_Number,
+        Revision_Number
+    FROM
+    (
+        SELECT *,
+               ROW_NUMBER() OVER
+               (
+                   PARTITION BY Major_Version
+                   ORDER BY
+                       Major_Version DESC,
+                       Minor_Version DESC,
+                       Build_Number DESC,
+                       Revision_Number DESC
+               ) AS rn
+        FROM tbl_Version_Catalog
+    ) V
+    WHERE rn = 1
+)
+
+SELECT SRV.tbl_serverlist_instance_name, VRS.KB_String,
+CASE 
+    WHEN 
+        VRS.Major_Version < LST.Major_Version
+        OR (VRS.Major_Version = LST.Major_Version AND VRS.Minor_Version < LST.Minor_Version)
+        OR (VRS.Major_Version = LST.Major_Version AND VRS.Minor_Version = LST.Minor_Version AND VRS.Build_Number < LST.Build_Number)
+        OR (VRS.Major_Version = LST.Major_Version AND VRS.Minor_Version = LST.Minor_Version 
+            AND VRS.Build_Number = LST.Build_Number AND VRS.Revision_Number < LST.Revision_Number)
+        THEN 'Not Compliant'
+    ELSE 'Compliant'
+END AS [Server Compliance]
+FROM tbl_serverlist SRV
+INNER JOIN tbl_Version_Catalog VRS
+ON SRV.tbl_serverlist_sql_version = VRS.ID
+INNER JOIN Latest_Version LST ON VRS.Major_Version = LST.Major_Version
