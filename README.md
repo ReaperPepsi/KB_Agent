@@ -235,3 +235,6 @@ Run these scripts in order against your SQL Server instance to set up the schema
 - File paths in `test_scrapping.py` and `data_normalizer.py` are currently hardcoded to `D:\DBA_python\...`. These should be updated to use relative paths or be driven from the config file for portability.
 - The scraper targets specific `<table>` indices on the source page. If the page layout changes, the index numbers may need to be adjusted.
 - The project uses two branches: `main` and `dev`. Active development happens on `dev`.
+- No sensitive data is committed to the repository
+- Configuration is environment-specific
+- This project is intended as a learning, experimentation, and reference platform
