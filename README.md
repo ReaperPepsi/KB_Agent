@@ -1,7 +1,5 @@
 # KB_Agent
 
-# KB_Agent
-
 A Python-based DBA automation tool that scrapes Microsoft SQL Server Knowledge Base (KB) patch data from the web, cleanses and normalizes it, inserts it into a SQL Server database, and generates server compliance reports. Designed to help database administrators track patch levels across SQL Server instances and identify servers that are not running the latest cumulative updates.
 
 ---
