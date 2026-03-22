@@ -209,3 +209,4 @@ __marimo__/
 
 # Sensitive configs
 config/config.dev.yaml
+config/mac_config.yaml

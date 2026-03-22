@@ -80,7 +80,11 @@ def kb_scrapping(response):
 
 
 def insert_data(kb_list):
-    path = "D:\DBA_python\src\core\scraping\kb_list.json"
+    # windows path
+    #old_path = "D:\DBA_python\src\core\scraping\kb_list.json"
+
+    #mac path - /Users/reaper_pepsi/KB_Agent/src/core/scraping/kb_list.json
+    path = '/Users/reaper_pepsi/KB_Agent/src/core/scraping/kb_list.json'
 
     if not kb_list:
         logger.error(f"Empty list of scrapped KB's")
