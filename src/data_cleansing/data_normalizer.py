@@ -53,7 +53,7 @@ def data_normalizer(kb_list: list) -> json:
 
 
 def create_cleansed_json(cleansed_data):
-    path = "D:\DBA_python\src\data_cleansing\kb_list_cleansed.json"
+    path = "/Users/reaper_pepsi/KB_Agent/src/data_cleansing/kb_list_cleansed.json"
     if not cleansed_data:
         logger.error(f"Empty list of data")
         raise ValueError("Please provide a valid list of data")
