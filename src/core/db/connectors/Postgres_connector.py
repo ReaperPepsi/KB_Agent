@@ -10,7 +10,7 @@ class SQLConnector:
         self.connection = None
         self.connection_string = DATABASE_URL
 
-    def create_connection(self):
+    def open_connection(self):
         try:
             if not self.connection:
                 self.connection = psycopg.connect(self.connection_string)
@@ -26,6 +26,29 @@ class SQLConnector:
             logger.info("Connection closed!")
 
 
+    def execute_query(self, query, params=None):
+        if self.connection is None:
+            raise ConnectionError("The connection is not opened for this object!")
 
+        if not query or query.strip() == '':
+            raise ValueError("Query could not be empty")
 
+        try:
+            with self.connection.cursor() as cursor:
+                logger.debug(f"Executing query: {query}" + (f" | Params: {params}" if params else ""))
 
+                cursor.execute(query, params) if params else cursor.execute(query)
+
+                if cursor.description:
+                    result = cursor.fetchall()
+                    logger.debug(f"Query returned {len(result)} rows")
+                    return result
+
+                self.connection.commit()
+                logger.debug(f"Query affected {cursor.rowcount} rows")
+                return cursor.rowcount
+
+        except Exception as e:
+            self.connection.rollback()
+            raise RuntimeError(f"Query failed, rollback executed") from e
+            

@@ -1,6 +1,7 @@
 import yaml, json
 from src.core.scraping.test_scrapping import check_connection, kb_scrapping, insert_data
 from src.data_cleansing.data_normalizer import data_normalizer, data_cleansing, create_cleansed_json
+from src.core.db.connectors.Postgres_connector import SQLConnector
 from logs.logger import get_logger
 
 
@@ -39,14 +40,11 @@ def get_insert_parameter(normalized_data):
 
 
 
-'''
-DEPRACATED - Old SQL Server Configuration INSERT
-
 def insert_data_sql(parameteres):
-    from src.core.db.connectors.sql_connector import SQLConnector
-    query = "INSERT INTO dbo.KB_Test (KB, Release_Date) VALUES (?, ?)" #ready to use T-SQL INSERT
-    inst_test = SQLConnector(None) #create a new instance -> needs REFACTOR FOR POSTGRES
-    inst_test.create_connection() #create a new connection
+    
+    query = "INSERT INTO public.KB_Scraped (KB, Release_Date) VALUES (%s, %s) ON CONFLICT (kb) DO NOTHING;" #ready to use T-SQL INSERT
+    inst_test = SQLConnector() #create a new instance -> needs REFACTOR FOR POSTGRES
+    inst_test.open_connection() #create a new connection
 
     for pairs in parameteres:
         try:
@@ -55,19 +53,15 @@ def insert_data_sql(parameteres):
             logger.error(f"Failed to INSERT elements: {pairs} with the following error: {e}")
             continue
 
-    inst_test.close()
+    inst_test.close_connection()
 
-    return None
-'''
 
 
 def main():
     scrapped_data = web_scrapping_insert_json(url="https://sqlserverbuilds.blogspot.com/")
     cleansed_json = prepare_data_for_db(scrapped_data)
     sql_parameters = get_insert_parameter(cleansed_json)
-
-    print(sql_parameters)
-    # insert_data_sql(sql_parameters)
+    insert_data_sql(sql_parameters)
 
 
 if __name__ == "__main__":
