@@ -8,12 +8,12 @@ def get_logger(name, filename):
     logger = logging.getLogger(name)
 
     if not logger.handlers:
-        logger.setLevel(logging.INFO)  # sau DEBUG
+        logger.setLevel(logging.DEBUG)  # sau DEBUG
 
         # 3. creează FileHandler pentru fișierul dorit
         log_path = os.path.join(LOG_DIR, filename)
         fh = logging.FileHandler(log_path, encoding='utf-8')
-        fh.setLevel(logging.INFO)
+        fh.setLevel(logging.DEBUG)
 
         formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
         fh.setFormatter(formatter)
