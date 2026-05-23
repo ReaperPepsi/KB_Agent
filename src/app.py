@@ -42,18 +42,24 @@ def get_insert_parameter(normalized_data):
 
 def insert_data_sql(parameteres):
     
-    query = "INSERT INTO public.KB_Scraped (KB, Release_Date) VALUES (%s, %s) ON CONFLICT (kb) DO NOTHING;" #ready to use T-SQL INSERT
-    inst_test = SQLConnector() #create a new instance -> needs REFACTOR FOR POSTGRES
-    inst_test.open_connection() #create a new connection
+    query = "INSERT INTO public.cat_build_number (KB, Release_Date) VALUES (%s, %s) ON CONFLICT (kb) DO NOTHING;" #ready to use T-SQL INSERT
+    database_platform_instance = SQLConnector() #create a new instance -> needs REFACTOR FOR POSTGRES
+    database_platform_instance.open_connection() #create a new connection
 
     for pairs in parameteres:
         try:
-            inst_test.execute_query(query, pairs) #execute pairs of parameters
+            database_platform_instance.execute_query(query, pairs) #execute pairs of parameters
         except Exception as e:
             logger.error(f"Failed to INSERT elements: {pairs} with the following error: {e}")
             continue
+    
+    try:
+        database_platform_instance.execute_query("CALL public.usp_update_version_catalog()") # -> update sql version table
 
-    inst_test.close_connection()
+    except Exception as E:
+        logger.error(f"Failed to UPDATE Version catalog with the following error: {E}")
+    
+    database_platform_instance.close_connection()
 
 
 
